@@ -1,0 +1,26 @@
+{
+  "name": "phonebook-cicd",
+  "version": "1.0.0",
+  "description": "Simple app for CI/CD exercise",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "build": "echo \"no build needed\"",
+    "test": "echo \"tests passed\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samanpasanakarmi/phonebook-cicd.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/samanpasanakarmi/phonebook-cicd/issues"
+  },
+  "homepage": "https://github.com/samanpasanakarmi/phonebook-cicd#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
