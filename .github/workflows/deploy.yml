@@ -1,0 +1,62 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  notify_success:
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+      - name: Discord success
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\":\"🚀 Phonebook deployed successfully: ${{ github.repository }}\"}" \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+  notify_failure:
+    needs: build
+    runs-on: ubuntu-latest
+    if: failure()
+
+    steps:
+      - name: Discord failure
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\":\"❌ Build failed: ${{ github.repository }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+          ${{ secrets.DISCORD_WEBHOOK }}
